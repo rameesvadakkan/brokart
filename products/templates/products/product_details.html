@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} Details{% endblock %}
+
+{% block content %}
+<style>
+    body { font-family: Arial; }
+    img { width: 300px; height: 300px; object-fit: cover; border-radius: 8px; }
+    .container { max-width: 500px; margin: auto; text-align: center; }
+    .price { font-size: 20px; color: green; }
+    a { text-decoration: none; color: blue; }
+</style>
+
+<div class="container">
+    {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    {% endif %}
+    <h1>{{ products.name }}</h1>
+    <p class="price">₹{{ product.price }}</p>
+    <p>{{ product.description }}</p>
+    <a href="{% url 'product_list' %}">← Back to Products</a>
+</div>
+{% endblock %}

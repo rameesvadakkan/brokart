@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}ByKart | Login{% endblock %}
+{% block content %}
+
+<style>
+    .container
+ { max-width: 500px; margin: auto; text-align: center; 
+    }
+</style>
+
+<div class=container>
+    <h2>Login</h2>
+<form method="POST">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Username"><br>
+    <input type="password" name="password" placeholder="Password"><br>
+    <button type="submit">Login</button>
+</form>
+</div>
+{%endblock%}

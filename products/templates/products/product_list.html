@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block title %}Product List{% endblock %}
+</head>
+<body>
+{% block content %}
+<style>
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .product {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px;
+            width: 230px;
+            float: left;
+            text-align: center;
+        }
+        img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+        }
+        a { text-decoration: none; color: blue; }
+    </style>
+    <h1>Our Products</h1>
+      {% for p in products %}
+        <div class="product">
+            {% if p.image %}
+                <img src="{{ p.image.url }}" alt="{{ p.name }}">
+            {% endif %}
+            <a href="{% url 'product_details' p.pk %}"><h3>{{ p.name }}</h3></a>
+            <p>₹{{ p.price }}</p>
+            <p>{{ p.description }}</p>
+        </div>
+    {% empty %}
+        <p>No products found.</p>
+    {% endfor %}
+{% endblock %}    
+</body>
+</html>

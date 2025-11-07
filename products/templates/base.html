@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}ByKart{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding:0;
+            background: #f7f7f7;
+        }
+        header {
+            background: #1b9dedff;
+            color: white;
+            padding: 5px;
+            text-align: center;
+        }
+        footer {
+            background: black;
+            color: white;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .content {
+            padding: 60px;
+        }
+        a {
+            color: white;
+            text-decoration: none;
+        }
+        .account_log{
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <header>
+         {% if user.is_authenticated %}
+    <p class="account_log">{{ user.username }} | 
+       <a href="{% url 'logout' %}">Logout</a>
+    </p>
+{% else %}
+    <a href="{% url 'login' %}">Login</a> |
+    <a href="{% url 'register' %}">Register</a>
+{% endif %}
+        <h1><a href="/">ByKart</a></h1>
+ </header>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <p>© 2025 ByKart | Built with Django</p>
+    </footer>
+</body>
+</html>
