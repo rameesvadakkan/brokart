@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>My Orders</h2>
+
+{% if orders %}
+    {% for order in orders %}
+        <div style="border:1px solid #ccc; padding:15px; margin:10px;">
+            <h3>Order #{{ order.id }}</h3>
+            <p>Date: {{ order.created_at|date:"d M Y, h:i A" }}</p>
+            <p><strong>Total: ₹{{ order.total_price }}</strong></p>
+
+            <table border="1" cellpadding="5">
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                </tr>
+                {% for item in order.items.all %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.price }}</td>
+                    <td>₹{{ item.quantity|floatformat:0|add:item.price }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>You have no previous orders.</p>
+{% endif %}
+{% endblock %}

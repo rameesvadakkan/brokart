@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Your Cart</h2>
+
+{% if cart %}
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+        {% for item in cart %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>₹{{ item.price }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>₹{{ item.total_price }}</td>
+            <td><a href="{% url 'cart_remove' item.product.id %}">Remove</a></td>
+        </tr>
+        {% endfor %}
+
+    </table>
+    <p><b>Grand Total: ₹{{ cart.get_total_price }}</b></p>
+    <p><button><a href="{% url 'checkout' %}">Proceed to Checkout</a></button></p>
+
+{% else %}
+    <p>Your cart is empty.</p>
+{% endif %}
+{% endblock %}

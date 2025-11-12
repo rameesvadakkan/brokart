@@ -1,36 +1,74 @@
 {% extends "base.html" %}
-<!DOCTYPE html>
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% block title %}Product List{% endblock %}
-</head>
-<body>
+{% block title %}Product List{% endblock %}
+
 {% block content %}
+
 <style>
-        body{
-            font-family: Arial, Helvetica, sans-serif;
-        }
-        .product {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px;
-            width: 230px;
-            float: left;
-            text-align: center;
-        }
-        img {
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
-        }
-        a { text-decoration: none; color: blue; }
-    </style>
-    <h1>Our Products</h1>
-      {% for p in products %}
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    .product {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 10px;
+        width: 230px;
+        float: left;
+        text-align: center;
+    }
+    img {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+    }
+    a {
+        text-decoration: none;
+        color: blue;
+    }
+    .pagination a {
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+    margin: 3px;
+    text-decoration: none;
+    color: blue;
+}
+.pagination a:hover {
+    background: #007bff;
+    color: white;
+}
+
+</style>
+
+<h1>Our Products</h1>
+<form method="get" action="." style="margin-bottom:20px;">
+    <input type="text" name="q" value="{{ query|default_if_none:'' }}" placeholder="Search products..." style="padding:6px; width:250px;">
+    <button type="submit" style="padding:6px 10px;">Search</button>
+</form>
+<form method="get" action="." style="margin-bottom:20px;">
+    <input type="text" name="q" value="{{ query|default_if_none:'' }}" placeholder="Search products..." style="padding:6px; width:250px;">
+    <select name="sort" onchange="this.form.submit()" style="padding:6px;">
+        <option value="latest" {% if sort == 'latest' %}selected{% endif %}>Newest</option>
+        <option value="low" {% if sort == 'low' %}selected{% endif %}>Price: Low to High</option>
+        <option value="high" {% if sort == 'high' %}selected{% endif %}>Price: High to Low</option>
+    </select>
+    <button type="submit" style="padding:6px 10px;">Search</button>
+</form>
+<!-- Category Filter -->
+<div style="margin-bottom:20px;">
+    <strong>Categories:</strong>
+    <a href="{% url 'product_list' %}" style="margin-right:10px;">All</a>
+    {% for c in categories %}
+        <a href="{% url 'product_list_by_category' c.slug %}"
+           style="{% if selected_category == c %}font-weight:bold; color:green;{% endif %} margin-right:10px;">
+           {{ c.name }}
+        </a>
+    {% endfor %}
+</div>
+
+<!-- Product Display -->
+<div style="display:flex; flex-wrap:wrap;">
+    {% for p in products %}
         <div class="product">
             {% if p.image %}
                 <img src="{{ p.image.url }}" alt="{{ p.name }}">
@@ -38,10 +76,31 @@
             <a href="{% url 'product_details' p.pk %}"><h3>{{ p.name }}</h3></a>
             <p>₹{{ p.price }}</p>
             <p>{{ p.description }}</p>
+            <p><a href="{% url 'cart_add' p.id %}">Add to Cart</a></p>
         </div>
     {% empty %}
-        <p>No products found.</p>
+        <p>No products available in this category.</p>
     {% endfor %}
-{% endblock %}    
-</body>
-</html>
+</div>
+<div style="width:100%; text-align:center; margin-top:30px;">
+    <div class="pagination">
+        {% if products.has_previous %}
+            <a href="?page={{ products.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">« Prev</a>
+        {% endif %}
+
+        <span>Page {{ products.number }} of {{ products.paginator.num_pages }}</span>
+
+        {% if products.has_next %}
+            <a href="?page={{ products.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}">Next »</a>
+        {% endif %}
+    </div>
+</div>
+
+{% if user.is_authenticated %}
+    <p><a href="{% url 'add_product' %}">+ Add Product</a> |
+         <a href="{% url 'logout' %}">Logout</a></p>
+{% else %}
+    <p><a href="{% url 'login' %}">Login</a></p>
+{% endif %}
+
+{% endblock %}
